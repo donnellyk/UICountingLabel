@@ -98,7 +98,9 @@
 
 @end
 
-@implementation UICountingLabel
+@implementation UICountingLabel {
+    BOOL halted;
+}
 
 -(void)countFrom:(float)value to:(float)endValue
 {
@@ -136,6 +138,8 @@
     
     self.counter.rate = 3.0f;
     
+    halted = NO;
+    
     NSTimer* timer = [NSTimer timerWithTimeInterval:(1.0f/30.0f) target:self selector:@selector(updateValue:) userInfo:nil repeats:YES];
     [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
 }
@@ -151,6 +155,10 @@
     {
         [timer invalidate];
         self.progress = self.totalTime;
+    }
+    else if (halted)
+    {
+        [timer invalidate];
     }
     
     float percent = self.progress / self.totalTime;
@@ -180,6 +188,10 @@
 		self.completionBlock();
 		self.completionBlock = nil;
 	}
+}
+
+-(void)halt {
+    halted = YES;
 }
 
 @end
